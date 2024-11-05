@@ -1,8 +1,8 @@
 services:
   api:
-    entrypoint: ["/bin/sh"]
-    stdin_open: true
-    tty: true
+    # entrypoint: ["/bin/sh"]
+    # stdin_open: true
+    # tty: true
 
     build: .
     env_file:
