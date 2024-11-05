@@ -1,0 +1,52 @@
+services:
+  api:
+    entrypoint: ["/bin/sh"]
+    stdin_open: true
+    tty: true
+
+    build: .
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - .:/opt/app
+    networks:
+      - app 
+  
+  redis:
+    image: redis:7-alpine
+    env_file:
+      - .env
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes: 
+      - cache:/data
+    networks:
+      - app 
+  
+  db:
+    image: postgres:17-alpine
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes: 
+      - db:/var/lib/postgresql/data
+    networks:
+      - app 
+
+volumes:
+  db:
+    driver: local
+  cache:
+    driver: local
+
+networks:
+  app:
+    driver: bridge
